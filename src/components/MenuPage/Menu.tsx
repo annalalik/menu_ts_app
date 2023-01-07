@@ -5,6 +5,7 @@ import { Attributes } from "./Attributes";
 import { Header } from "./Header";
 import { Dish } from "./Dish";
 import { DishDTO } from "../../Api";
+import { useState } from "react";
 
 const directus = new Directus("https://directus.colorify.run/");
 
@@ -70,10 +71,24 @@ interface MenuGroup {
 }
 
 export function Menu() {
+  const [isGlutenFreeClicked, setIsGlutenFreeClicked] = useState(false);
+  const [isLactoseFreeClicked, setIsLactoseFreeClicked] = useState(false);
+  const [isVegetarianClicked, setIsVegetarianClicked] = useState(false);
+  const [isVeganClicked, setIsVeganClicked] = useState(false);
+
   return (
     <MenuPage>
       <Header />
-      <Attributes />
+      <Attributes
+        isGlutenFreeClicked={isGlutenFreeClicked}
+        setIsGlutenFreeClicked={setIsGlutenFreeClicked}
+        isLactoseFreeClicked={isLactoseFreeClicked}
+        setIsLactoseFreeClicked={setIsLactoseFreeClicked}
+        isVegetarianClicked={isVegetarianClicked}
+        setIsVegetarianClicked={setIsVegetarianClicked}
+        isVeganClicked={isVeganClicked}
+        setIsVeganClicked={setIsVeganClicked}
+      />
 
       <MenuWrapper>
         {menuData.data &&
@@ -82,16 +97,14 @@ export function Menu() {
               <h2>{group.name}</h2>
               <DishesWrapper>
                 {group.dishes.map((dish) => {
-                  //   const dishPrice = dish.price.split(".").slice(0, 1);
                   return (
-                    <Dish dish={dish} />
-                    // <DishWrapper>
-                    //   <div>
-                    //     <h3>{dish.name}</h3>
-                    //     <p>{dish.description}</p>
-                    //   </div>
-                    //   <PriceItem>{dishPrice}</PriceItem>
-                    // </DishWrapper>
+                    <Dish
+                      isGlutenFreeClicked={isGlutenFreeClicked}
+                      isLactoseFreeClicked={isLactoseFreeClicked}
+                      isVegetarianClicked={isVegetarianClicked}
+                      isVeganClicked={isVeganClicked}
+                      dish={dish}
+                    />
                   );
                 })}
               </DishesWrapper>

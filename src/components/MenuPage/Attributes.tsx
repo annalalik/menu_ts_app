@@ -5,6 +5,7 @@ import glutenFree from "../../assets/no-gluten.png";
 import lactoseFree from "../../assets/no-dairy.png";
 import vegan from "../../assets/vegan.png";
 import vagetarian from "../../assets/vegetarian-mark.png";
+import { useState } from "react";
 
 const directus = new Directus("https://directus.colorify.run/");
 
@@ -25,10 +26,12 @@ const Attribute = styled.img`
   margin: 10px auto;
 `;
 
-const AttributeWrapper = styled.div`
+const AttributeWrapper = styled.div<{ isChecked: boolean }>`
   display: flex;
   flex-direction: column;
   width: 130px;
+  padding: 10px;
+  background-color: ${(props) => (props.isChecked ? "#ffd770" : "")};
 `;
 
 const Text = styled.p`
@@ -38,23 +41,52 @@ const Text = styled.p`
   letter-spacing: 1px;
 `;
 
-export function Attributes() {
+interface AttributesProps {
+  isGlutenFreeClicked: boolean;
+  setIsGlutenFreeClicked: (value: boolean) => void;
+  isLactoseFreeClicked: boolean;
+  setIsLactoseFreeClicked: (value: boolean) => void;
+  isVegetarianClicked: boolean;
+  setIsVegetarianClicked: (value: boolean) => void;
+  isVeganClicked: boolean;
+  setIsVeganClicked: (value: boolean) => void;
+}
+
+export function Attributes(props: AttributesProps) {
   return (
     <AttributesWrapper>
-      <AttributeWrapper>
-        <Attribute src={glutenFree} />
+      <AttributeWrapper isChecked={props.isGlutenFreeClicked}>
+        <Attribute
+          onClick={() =>
+            props.setIsGlutenFreeClicked(!props.isGlutenFreeClicked)
+          }
+          src={glutenFree}
+        />
         <Text>Gluten Free</Text>
       </AttributeWrapper>
-      <AttributeWrapper>
-        <Attribute src={lactoseFree} />
+      <AttributeWrapper isChecked={props.isLactoseFreeClicked}>
+        <Attribute
+          onClick={() =>
+            props.setIsLactoseFreeClicked(!props.isLactoseFreeClicked)
+          }
+          src={lactoseFree}
+        />
         <Text>Bez laktozy</Text>
       </AttributeWrapper>
-      <AttributeWrapper>
-        <Attribute src={vagetarian} />
+      <AttributeWrapper isChecked={props.isVegetarianClicked}>
+        <Attribute
+          onClick={() =>
+            props.setIsVegetarianClicked(!props.isVegetarianClicked)
+          }
+          src={vagetarian}
+        />
         <Text>Wegetariańskie</Text>
       </AttributeWrapper>
-      <AttributeWrapper>
-        <Attribute src={vegan} />
+      <AttributeWrapper isChecked={props.isVeganClicked}>
+        <Attribute
+          onClick={() => props.setIsVeganClicked(!props.isVeganClicked)}
+          src={vegan}
+        />
         <Text>Wegańskie</Text>
       </AttributeWrapper>
     </AttributesWrapper>

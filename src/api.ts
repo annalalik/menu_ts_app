@@ -8,6 +8,7 @@ export interface MenuGroupDTO {
   export interface AttributeDTO {
     dish_attributes_id: string;
     id: string;
+    name: string
 }
 
   export interface DishDTO {
@@ -18,5 +19,3 @@ export interface MenuGroupDTO {
     description?: string;
     attributes: AttributeDTO[];
   }
-
-  
