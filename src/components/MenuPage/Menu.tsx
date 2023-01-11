@@ -1,15 +1,12 @@
-import * as React from "react";
 import styled from "styled-components";
-import { Directus } from "@directus/sdk";
 import { Attributes } from "./Attributes";
 import { Header } from "./Header";
 import { Dish } from "./Dish";
-import { DishDTO } from "../../Api";
+import { DishDTO, MenuGroupDTO } from "../../api";
 import { useState } from "react";
+import { menuItems } from "../../api";
 
-const directus = new Directus("https://directus.colorify.run/");
-
-const menuData = await directus.items("menus").readByQuery({
+const menuData = await menuItems.readByQuery({
   limit: -1,
   fields: ["*", "groups.*", "groups.dishes.*", "groups.dishes.attributes.*"],
 });
@@ -59,17 +56,6 @@ const AdditionalInfoWrapper = styled.div`
   font-weight: 400;
 `;
 
-interface Menu {
-  // Declare any props that the component should expect here
-}
-
-interface MenuGroup {
-  id: string;
-  name: string;
-  type: string;
-  dishes: DishDTO[];
-}
-
 export function Menu() {
   const [isGlutenFreeClicked, setIsGlutenFreeClicked] = useState(false);
   const [isLactoseFreeClicked, setIsLactoseFreeClicked] = useState(false);
@@ -92,7 +78,7 @@ export function Menu() {
 
       <MenuWrapper>
         {menuData.data &&
-          menuData.data[0]?.groups.map((group: MenuGroup) => (
+          menuData.data[0]?.groups.map((group: MenuGroupDTO) => (
             <GroupWrapper>
               <h2>{group.name}</h2>
               <DishesWrapper>

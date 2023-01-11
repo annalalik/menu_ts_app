@@ -1,3 +1,8 @@
+import { Directus } from "@directus/sdk";
+
+const directus = new Directus("https://directus.colorify.run/");
+export const menuItems = directus.items("menus");
+
 export interface MenuGroupDTO {
     id: string;
     name: string;

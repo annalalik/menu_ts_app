@@ -1,15 +1,13 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Directus } from "@directus/sdk";
 import glutenFree from "../../assets/no-gluten.png";
 import lactoseFree from "../../assets/no-dairy.png";
 import vegan from "../../assets/vegan.png";
 import vagetarian from "../../assets/vegetarian-mark.png";
 import { useState } from "react";
+import { menuItems } from "../../api";
 
-const directus = new Directus("https://directus.colorify.run/");
-
-const menuData = await directus.items("menus").readByQuery({
+const menuData = await menuItems.readByQuery({
   limit: -1,
   fields: ["*", "groups.*", "groups.dishes.*", "groups.dishes.attributes.*"],
 });

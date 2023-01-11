@@ -1,4 +1,3 @@
-import * as React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import mainBgImage from "../assets/tea-gold-sweet.jpg";
@@ -9,6 +8,7 @@ const HomeWrapper = styled.div`
   height: 100vh;
 `;
 
+// check if position absolute is necessary
 const TitleWrapper = styled.div`
   position: absolute;
   display: flex;
@@ -31,16 +31,24 @@ const Subtitle = styled.span`
   text-align: left;
 `;
 
-const Button = styled.button`
+const StyledLink = styled(Link)`
   font-size: 20px;
-  text-shadow: 2px;
+  text-decoration: none;
   background-color: #ffd700;
+  color: black;
   width: 70%;
-  margin: auto;
+  padding: 5px;
+  margin: 0;
+  text-align: center;
+  border-radius: 2px;
+
+  &:hover {
+    text-decoration: none;
+    color: black;
+  }
 `;
 
 interface MainProps {
-  // Declare any props that the component should expect here
   name: string;
   subname: string;
 }
@@ -53,9 +61,9 @@ export function Home(props: MainProps) {
           {props.name}
           <Subtitle>- {props.subname}</Subtitle>
         </Title>
-        <Link to={`menu`}>
-          <Button>Wejdź i zobacz co dla Ciebie przygotowaliśmy</Button>
-        </Link>
+        <StyledLink to={`menu`}>
+          Wejdź i zobacz co dla Ciebie przygotowaliśmy
+        </StyledLink>
       </TitleWrapper>
     </HomeWrapper>
   );
