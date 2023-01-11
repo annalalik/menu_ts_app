@@ -5,8 +5,8 @@ import glutenFree from "../../assets/no-gluten.png";
 import lactoseFree from "../../assets/no-dairy.png";
 import vegan from "../../assets/vegan.png";
 import vegetarian from "../../assets/vegetarian-mark.png";
-import { AttributeDTO, DishDTO } from "../../Api";
-import { useState } from "react";
+import { AttributeDTO, DishDTO } from "../../api";
+import { AttributeFilter } from "./Attributes";
 
 const directus = new Directus("https://directus.colorify.run/");
 
@@ -69,10 +69,7 @@ const AttributeItem = styled.img`
 
 interface DishProps {
   dish: DishDTO;
-  isGlutenFreeClicked: boolean;
-  isLactoseFreeClicked: boolean;
-  isVeganClicked: boolean;
-  isVegetarianClicked: boolean;
+  filter: AttributeFilter;
 }
 
 export function Dish(props: DishProps) {
@@ -88,7 +85,7 @@ export function Dish(props: DishProps) {
 
   let isTransparent;
 
-  if (props.isGlutenFreeClicked) {
+  if (props.filter.isGlutenFree) {
     isTransparent = !(
       typeof attributesArray.find(
         (attrItem) => attrItem.name === "Gluten-Free"
@@ -96,7 +93,7 @@ export function Dish(props: DishProps) {
     );
   }
 
-  if (props.isLactoseFreeClicked) {
+  if (props.filter.isLactoseFree) {
     isTransparent = !(
       typeof attributesArray.find(
         (attrItem) => attrItem.name === "Lactose-Free"
@@ -104,7 +101,7 @@ export function Dish(props: DishProps) {
     );
   }
 
-  if (props.isVegetarianClicked) {
+  if (props.filter.isVegetarian) {
     isTransparent = !(
       typeof attributesArray.find(
         (attrItem) => attrItem.name === "Vegetarian"
@@ -112,7 +109,7 @@ export function Dish(props: DishProps) {
     );
   }
 
-  if (props.isVeganClicked) {
+  if (props.filter.isVegan) {
     isTransparent = !(
       typeof attributesArray.find((attrItem) => attrItem.name === "Vegan") ===
       "object"

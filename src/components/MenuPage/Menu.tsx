@@ -5,6 +5,7 @@ import { Dish } from "./Dish";
 import { DishDTO, MenuGroupDTO } from "../../api";
 import { useState } from "react";
 import { menuItems } from "../../api";
+import { AttributeFilter } from "./Attributes";
 
 const menuData = await menuItems.readByQuery({
   limit: -1,
@@ -57,24 +58,28 @@ const AdditionalInfoWrapper = styled.div`
 `;
 
 export function Menu() {
-  const [isGlutenFreeClicked, setIsGlutenFreeClicked] = useState(false);
-  const [isLactoseFreeClicked, setIsLactoseFreeClicked] = useState(false);
-  const [isVegetarianClicked, setIsVegetarianClicked] = useState(false);
-  const [isVeganClicked, setIsVeganClicked] = useState(false);
+  const [selectedAttributes, setSelectedAttributes] = useState<AttributeFilter>(
+    {
+      isGlutenFree: false,
+      isLactoseFree: false,
+      isVegan: false,
+      isVegetarian: false,
+    }
+  );
+
+  const handleFilterChange = (
+    value: boolean,
+    filter: keyof AttributeFilter
+  ) => {
+    let newSelectedAttributes = { ...selectedAttributes };
+    newSelectedAttributes[filter] = value;
+    setSelectedAttributes(newSelectedAttributes);
+  };
 
   return (
     <MenuPage>
       <Header />
-      <Attributes
-        isGlutenFreeClicked={isGlutenFreeClicked}
-        setIsGlutenFreeClicked={setIsGlutenFreeClicked}
-        isLactoseFreeClicked={isLactoseFreeClicked}
-        setIsLactoseFreeClicked={setIsLactoseFreeClicked}
-        isVegetarianClicked={isVegetarianClicked}
-        setIsVegetarianClicked={setIsVegetarianClicked}
-        isVeganClicked={isVeganClicked}
-        setIsVeganClicked={setIsVeganClicked}
-      />
+      <Attributes filter={selectedAttributes} setFilter={handleFilterChange} />
 
       <MenuWrapper>
         {menuData.data &&
@@ -83,15 +88,7 @@ export function Menu() {
               <h2>{group.name}</h2>
               <DishesWrapper>
                 {group.dishes.map((dish) => {
-                  return (
-                    <Dish
-                      isGlutenFreeClicked={isGlutenFreeClicked}
-                      isLactoseFreeClicked={isLactoseFreeClicked}
-                      isVegetarianClicked={isVegetarianClicked}
-                      isVeganClicked={isVeganClicked}
-                      dish={dish}
-                    />
-                  );
+                  return <Dish filter={selectedAttributes} dish={dish} />;
                 })}
               </DishesWrapper>
             </GroupWrapper>

@@ -40,49 +40,50 @@ const Text = styled.p`
 `;
 
 interface AttributesProps {
-  isGlutenFreeClicked: boolean;
-  setIsGlutenFreeClicked: (value: boolean) => void;
-  isLactoseFreeClicked: boolean;
-  setIsLactoseFreeClicked: (value: boolean) => void;
-  isVegetarianClicked: boolean;
-  setIsVegetarianClicked: (value: boolean) => void;
-  isVeganClicked: boolean;
-  setIsVeganClicked: (value: boolean) => void;
+  filter: AttributeFilter;
+  setFilter: (value: boolean, filter: keyof AttributeFilter) => void;
+}
+
+export interface AttributeFilter {
+  isGlutenFree: boolean;
+  isLactoseFree: boolean;
+  isVegetarian: boolean;
+  isVegan: boolean;
 }
 
 export function Attributes(props: AttributesProps) {
   return (
     <AttributesWrapper>
-      <AttributeWrapper isChecked={props.isGlutenFreeClicked}>
+      <AttributeWrapper isChecked={props.filter.isGlutenFree}>
         <Attribute
           onClick={() =>
-            props.setIsGlutenFreeClicked(!props.isGlutenFreeClicked)
+            props.setFilter(!props.filter.isGlutenFree, "isGlutenFree")
           }
           src={glutenFree}
         />
         <Text>Gluten Free</Text>
       </AttributeWrapper>
-      <AttributeWrapper isChecked={props.isLactoseFreeClicked}>
+      <AttributeWrapper isChecked={props.filter.isLactoseFree}>
         <Attribute
           onClick={() =>
-            props.setIsLactoseFreeClicked(!props.isLactoseFreeClicked)
+            props.setFilter(!props.filter.isLactoseFree, "isLactoseFree")
           }
           src={lactoseFree}
         />
         <Text>Bez laktozy</Text>
       </AttributeWrapper>
-      <AttributeWrapper isChecked={props.isVegetarianClicked}>
+      <AttributeWrapper isChecked={props.filter.isVegetarian}>
         <Attribute
           onClick={() =>
-            props.setIsVegetarianClicked(!props.isVegetarianClicked)
+            props.setFilter(!props.filter.isVegetarian, "isVegetarian")
           }
           src={vagetarian}
         />
         <Text>Wegetariańskie</Text>
       </AttributeWrapper>
-      <AttributeWrapper isChecked={props.isVeganClicked}>
+      <AttributeWrapper isChecked={props.filter.isVegan}>
         <Attribute
-          onClick={() => props.setIsVeganClicked(!props.isVeganClicked)}
+          onClick={() => props.setFilter(!props.filter.isVegan, "isVegan")}
           src={vegan}
         />
         <Text>Wegańskie</Text>
