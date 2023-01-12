@@ -1,16 +1,17 @@
-import * as React from "react";
 import styled from "styled-components";
-import { Directus } from "@directus/sdk";
-import glutenFree from "../../assets/no-gluten.png";
-import lactoseFree from "../../assets/no-dairy.png";
-import vegan from "../../assets/vegan.png";
-import vegetarian from "../../assets/vegetarian-mark.png";
-import { AttributeDTO, DishDTO } from "../../api";
+import glutenFreeImg from "../../assets/no-gluten.png";
+import lactoseFreeImg from "../../assets/no-dairy.png";
+import veganImg from "../../assets/vegan.png";
+import vegetarianImg from "../../assets/vegetarian-mark.png";
+import {
+  AttributeDetailDTO,
+  AttributeDTO,
+  dishAttributesItems,
+  DishDTO,
+} from "../../api";
 import { AttributeFilter } from "./Attributes";
 
-const directus = new Directus("https://directus.colorify.run/");
-
-const attributesData = await directus.items("dish_attributes").readByQuery({
+const attributesData = await dishAttributesItems.readByQuery({
   limit: -1,
   fields: ["*", "groups.*", "groups.dishes.*", "groups.dishes.attributes.*"],
 });
@@ -37,6 +38,7 @@ const DishWrapper = styled.div<{ greyedOut: boolean }>`
       font-weight: 400;
     }
   }
+
   opacity: ${(props) => (props.greyedOut ? "0.1" : "1")};
 `;
 
@@ -72,9 +74,16 @@ interface DishProps {
   filter: AttributeFilter;
 }
 
+const imageAttributeMap: Record<string, string> = {
+  "Gluten-Free": glutenFreeImg,
+  "Lactose-Free": lactoseFreeImg,
+  Vegetarian: vegetarianImg,
+  Vegan: veganImg,
+};
+
 export function Dish(props: DishProps) {
-  const dishPrice = props.dish.price.split(".").slice(0, 1);
-  const attributesArray = props.dish.attributes.map(
+  const dishPrice = parseFloat(props.dish.price).toLocaleString();
+  const attributesArray: AttributeDetailDTO[] = props.dish.attributes.map(
     (attribute: AttributeDTO) => {
       const matchedAttr = attributesData.data?.find(
         (atr) => atr.id === attribute.dish_attributes_id
@@ -82,38 +91,24 @@ export function Dish(props: DishProps) {
       return matchedAttr;
     }
   );
+  const attributeNames = attributesArray.map((attribute) => attribute.name);
+  const { isGlutenFree, isLactoseFree, isVegetarian, isVegan } = props.filter;
+  let isTransparent: boolean = false;
 
-  let isTransparent;
-
-  if (props.filter.isGlutenFree) {
-    isTransparent = !(
-      typeof attributesArray.find(
-        (attrItem) => attrItem.name === "Gluten-Free"
-      ) === "object"
-    );
+  if (isGlutenFree) {
+    isTransparent = attributeNames.includes("Gluten-Free");
   }
 
-  if (props.filter.isLactoseFree) {
-    isTransparent = !(
-      typeof attributesArray.find(
-        (attrItem) => attrItem.name === "Lactose-Free"
-      ) === "object"
-    );
+  if (isLactoseFree) {
+    isTransparent = attributeNames.includes("Lactose-Free");
   }
 
-  if (props.filter.isVegetarian) {
-    isTransparent = !(
-      typeof attributesArray.find(
-        (attrItem) => attrItem.name === "Vegetarian"
-      ) === "object"
-    );
+  if (isVegetarian) {
+    isTransparent = attributeNames.includes("Vegetarian");
   }
 
-  if (props.filter.isVegan) {
-    isTransparent = !(
-      typeof attributesArray.find((attrItem) => attrItem.name === "Vegan") ===
-      "object"
-    );
+  if (isVegan) {
+    isTransparent = attributeNames.includes("Vegan");
   }
 
   return (
@@ -124,21 +119,9 @@ export function Dish(props: DishProps) {
           <p>{props.dish.description}</p>
         </div>
         <DishAttributes>
-          {attributesArray.map((attributeItem: AttributeDTO) => {
+          {attributesArray.map((attributeItem) => {
             return (
-              <AttributeItem
-                src={
-                  attributeItem.name === "Gluten-Free"
-                    ? glutenFree
-                    : attributeItem.name === "Lactose-Free"
-                    ? lactoseFree
-                    : attributeItem.name === "Vegetarian"
-                    ? vegetarian
-                    : attributeItem.name === "Vegan"
-                    ? vegan
-                    : ""
-                }
-              />
+              <AttributeItem src={imageAttributeMap[attributeItem.name]} />
             );
           })}
         </DishAttributes>

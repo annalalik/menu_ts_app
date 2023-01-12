@@ -1,9 +1,6 @@
-import * as React from "react";
 import styled from "styled-components";
 
-interface Header {
-  // Declare any props that the component should expect here
-}
+interface Header {}
 
 const HeaderWrapper = styled.div`
   display: flex;

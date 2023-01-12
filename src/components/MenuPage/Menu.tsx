@@ -58,28 +58,26 @@ const AdditionalInfoWrapper = styled.div`
 `;
 
 export function Menu() {
-  const [selectedAttributes, setSelectedAttributes] = useState<AttributeFilter>(
-    {
-      isGlutenFree: false,
-      isLactoseFree: false,
-      isVegan: false,
-      isVegetarian: false,
-    }
-  );
+  const [attributeFilter, setAttributeFilter] = useState<AttributeFilter>({
+    isGlutenFree: false,
+    isLactoseFree: false,
+    isVegan: false,
+    isVegetarian: false,
+  });
 
   const handleFilterChange = (
     value: boolean,
     filter: keyof AttributeFilter
   ) => {
-    let newSelectedAttributes = { ...selectedAttributes };
+    let newSelectedAttributes = { ...attributeFilter };
     newSelectedAttributes[filter] = value;
-    setSelectedAttributes(newSelectedAttributes);
+    setAttributeFilter(newSelectedAttributes);
   };
 
   return (
     <MenuPage>
       <Header />
-      <Attributes filter={selectedAttributes} setFilter={handleFilterChange} />
+      <Attributes filter={attributeFilter} setFilter={handleFilterChange} />
 
       <MenuWrapper>
         {menuData.data &&
@@ -88,7 +86,7 @@ export function Menu() {
               <h2>{group.name}</h2>
               <DishesWrapper>
                 {group.dishes.map((dish) => {
-                  return <Dish filter={selectedAttributes} dish={dish} />;
+                  return <Dish filter={attributeFilter} dish={dish} />;
                 })}
               </DishesWrapper>
             </GroupWrapper>
