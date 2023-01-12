@@ -2,15 +2,10 @@ import styled from "styled-components";
 import { Attributes } from "./Attributes";
 import { Header } from "./Header";
 import { Dish } from "./Dish";
-import { DishDTO, MenuGroupDTO } from "../../api";
-import { useState } from "react";
+import { DishDTO, MenuDTO, MenuGroupDTO } from "../../api";
+import { useEffect, useState } from "react";
 import { menuItems } from "../../api";
 import { AttributeFilter } from "./Attributes";
-
-const menuData = await menuItems.readByQuery({
-  limit: -1,
-  fields: ["*", "groups.*", "groups.dishes.*", "groups.dishes.attributes.*"],
-});
 
 const MenuPage = styled.div`
   width: 100%;
@@ -58,6 +53,28 @@ const AdditionalInfoWrapper = styled.div`
 `;
 
 export function Menu() {
+  const [menuData, setMenuData] = useState<MenuDTO>();
+
+  useEffect(() => {
+    const fetchMenuData = async () => {
+      const menuData = await menuItems.readByQuery({
+        limit: -1,
+        fields: [
+          "*",
+          "groups.*",
+          "groups.dishes.*",
+          "groups.dishes.attributes.*",
+        ],
+      });
+
+      if (menuData.data && menuData.data[0]) {
+        setMenuData(menuData.data[0] as MenuDTO);
+      }
+    };
+
+    fetchMenuData();
+  }, []);
+
   const [attributeFilter, setAttributeFilter] = useState<AttributeFilter>({
     isGlutenFree: false,
     isLactoseFree: false,
@@ -80,8 +97,8 @@ export function Menu() {
       <Attributes filter={attributeFilter} setFilter={handleFilterChange} />
 
       <MenuWrapper>
-        {menuData.data &&
-          menuData.data[0]?.groups.map((group: MenuGroupDTO) => (
+        {menuData &&
+          menuData.groups.map((group: MenuGroupDTO) => (
             <GroupWrapper>
               <h2>{group.name}</h2>
               <DishesWrapper>

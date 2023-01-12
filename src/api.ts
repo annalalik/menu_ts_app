@@ -4,6 +4,10 @@ const directus = new Directus("https://directus.colorify.run/");
 export const menuItems = directus.items("menus");
 export const dishAttributesItems = directus.items("dish_attributes");
 
+export interface MenuDTO {
+  id: string;
+  groups: MenuGroupDTO[]
+}
 export interface MenuGroupDTO {
     id: string;
     name: string;
