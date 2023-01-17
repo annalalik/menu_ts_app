@@ -4,13 +4,6 @@ import glutenFree from "../../assets/no-gluten.png";
 import lactoseFree from "../../assets/no-dairy.png";
 import vegan from "../../assets/vegan.png";
 import vagetarian from "../../assets/vegetarian-mark.png";
-import { useState } from "react";
-import { menuItems } from "../../api";
-
-const menuData = await menuItems.readByQuery({
-  limit: -1,
-  fields: ["*", "groups.*", "groups.dishes.*", "groups.dishes.attributes.*"],
-});
 
 const AttributesWrapper = styled.div`
   margin: 20px auto;

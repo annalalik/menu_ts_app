@@ -15,10 +15,10 @@ export interface MenuGroupDTO {
     dishes: DishDTO[];
   }
 
-  export interface AttributeDTO {
+export interface AttributeDTO {
     dish_attributes_id: string;
     id: string;
-    name: string
+    name: string;
 }
 
   export interface DishDTO {

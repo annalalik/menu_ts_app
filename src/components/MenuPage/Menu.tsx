@@ -2,7 +2,12 @@ import styled from "styled-components";
 import { Attributes } from "./Attributes";
 import { Header } from "./Header";
 import { Dish } from "./Dish";
-import { DishDTO, MenuDTO, MenuGroupDTO } from "../../api";
+import {
+  AttributeDetailDTO,
+  dishAttributesItems,
+  MenuDTO,
+  MenuGroupDTO,
+} from "../../api";
 import { useEffect, useState } from "react";
 import { menuItems } from "../../api";
 import { AttributeFilter } from "./Attributes";
@@ -52,8 +57,18 @@ const AdditionalInfoWrapper = styled.div`
   font-weight: 400;
 `;
 
+export interface OrderedDish {
+  dishId: string;
+  quantity: number;
+}
+
 export function Menu() {
   const [menuData, setMenuData] = useState<MenuDTO>();
+  const [attributesData, setAttributesData] = useState<AttributeDetailDTO[]>(
+    []
+  );
+  const [isOrderReady, setIsOrderReady] = useState(false);
+  const [orderedDishes, setOrderedDishes] = useState<OrderedDish[]>([]);
 
   useEffect(() => {
     const fetchMenuData = async () => {
@@ -67,13 +82,60 @@ export function Menu() {
         ],
       });
 
+      const attributesData = await dishAttributesItems.readByQuery({
+        limit: -1,
+        fields: [
+          "*",
+          "groups.*",
+          "groups.dishes.*",
+          "groups.dishes.attributes.*",
+        ],
+      });
+
       if (menuData.data && menuData.data[0]) {
         setMenuData(menuData.data[0] as MenuDTO);
+      }
+
+      if (attributesData.data) {
+        setAttributesData(attributesData.data as AttributeDetailDTO[]);
       }
     };
 
     fetchMenuData();
   }, []);
+
+  const addOrderedDish = (dishId: string) => {
+    const newOrderedDishes = [...orderedDishes];
+    const existingDishIdx = newOrderedDishes
+      .map((item) => item.dishId)
+      .indexOf(dishId);
+
+    if (existingDishIdx >= 0) {
+      const dishIdx = existingDishIdx;
+      newOrderedDishes[dishIdx].quantity += 1;
+    } else {
+      newOrderedDishes.push({ dishId: dishId, quantity: 1 });
+    }
+
+    setOrderedDishes(newOrderedDishes);
+  };
+
+  const removeOrderedDishes = (dishId: string) => {
+    const newOrderedDishes = [...orderedDishes];
+    const dishToRemoveIdx = orderedDishes
+      .map((orderedDish) => orderedDish.dishId)
+      .findIndex((element) => element === dishId);
+
+    if (dishToRemoveIdx >= 0) {
+      if (newOrderedDishes[dishToRemoveIdx].quantity > 1) {
+        newOrderedDishes[dishToRemoveIdx].quantity -= 1;
+      } else {
+        newOrderedDishes.splice(dishToRemoveIdx, 1);
+      }
+    }
+
+    setOrderedDishes(newOrderedDishes);
+  };
 
   const [attributeFilter, setAttributeFilter] = useState<AttributeFilter>({
     isGlutenFree: false,
@@ -93,7 +155,7 @@ export function Menu() {
 
   return (
     <MenuPage>
-      <Header />
+      <Header isOrderReady={isOrderReady} />
       <Attributes filter={attributeFilter} setFilter={handleFilterChange} />
 
       <MenuWrapper>
@@ -103,7 +165,16 @@ export function Menu() {
               <h2>{group.name}</h2>
               <DishesWrapper>
                 {group.dishes.map((dish) => {
-                  return <Dish filter={attributeFilter} dish={dish} />;
+                  return (
+                    <Dish
+                      filter={attributeFilter}
+                      dish={dish}
+                      attributesData={attributesData}
+                      addOrderedDish={addOrderedDish}
+                      orderedDishes={orderedDishes}
+                      removeOrderedDish={removeOrderedDishes}
+                    />
+                  );
                 })}
               </DishesWrapper>
             </GroupWrapper>

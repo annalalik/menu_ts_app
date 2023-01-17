@@ -1,6 +1,9 @@
 import styled from "styled-components";
+import basketImg from "../../assets/basket-yellow.png";
 
-interface Header {}
+export interface Header {
+  isOrderReady: boolean;
+}
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -79,6 +82,18 @@ const SecondLine = styled.div`
   }
 `;
 
+const LogosWrapper = styled.div`
+  display: flex;
+`;
+
+const BasketLogo = styled.img`
+  width: 40px;
+  height: 40px;
+  align-self: end;
+  margin: -10px -25px;
+  z-index: 10000;
+`;
+
 export function Header() {
   return (
     <HeaderWrapper>
@@ -87,16 +102,19 @@ export function Header() {
         <hr />
         <p>Cafe & Bistro</p>
       </HeaderName>
-      <HeaderLogo>
-        <FirstLine>
-          <p>M</p>
-          <p>E</p>
-        </FirstLine>
-        <SecondLine>
-          <p>N</p>
-          <p>U</p>
-        </SecondLine>
-      </HeaderLogo>
+      <LogosWrapper>
+        <BasketLogo src={basketImg} />
+        <HeaderLogo>
+          <FirstLine>
+            <p>M</p>
+            <p>E</p>
+          </FirstLine>
+          <SecondLine>
+            <p>N</p>
+            <p>U</p>
+          </SecondLine>
+        </HeaderLogo>
+      </LogosWrapper>
     </HeaderWrapper>
   );
 }
