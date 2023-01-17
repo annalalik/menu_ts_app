@@ -127,6 +127,10 @@ export function Dish(props: DishProps) {
     .map((orderedDish) => orderedDish.dishId)
     .includes(props.dish.id);
 
+  const dishQuantity = props.orderedDishes.find(
+    (orderedDish) => orderedDish.dishId === props.dish.id
+  )?.quantity;
+
   return (
     <DishWrapper greyedOut={isTransparent}>
       <AddItem
@@ -140,7 +144,9 @@ export function Dish(props: DishProps) {
       />
       <DishDescriptionwrapper>
         <div>
-          <h3>{props.dish.name}</h3>
+          <h3>
+            {props.dish.name} {dishQuantity && <span>({dishQuantity})</span>}
+          </h3>
           <p>{props.dish.description}</p>
         </div>
         <DishAttributes>
