@@ -70,6 +70,11 @@ export function Menu() {
   const [isOrderReady, setIsOrderReady] = useState(false);
   const [orderedDishes, setOrderedDishes] = useState<OrderedDish[]>([]);
 
+  const orderedDishesTotal = orderedDishes
+    .map((dishTotal) => dishTotal.quantity)
+    .reduce((qt1, qt2) => qt1 + qt2, 0);
+  console.log(orderedDishesTotal);
+
   useEffect(() => {
     const fetchMenuData = async () => {
       const menuData = await menuItems.readByQuery({
@@ -155,7 +160,10 @@ export function Menu() {
 
   return (
     <MenuPage>
-      <Header isOrderReady={isOrderReady} />
+      <Header
+        isOrderReady={isOrderReady}
+        orderedDishesTotal={orderedDishesTotal}
+      />
       <Attributes filter={attributeFilter} setFilter={handleFilterChange} />
 
       <MenuWrapper>

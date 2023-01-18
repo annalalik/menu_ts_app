@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import basketImg from "../../assets/basket-yellow.png";
+import { Link } from "react-router-dom";
 
-export interface Header {
+export interface HeaderProps {
   isOrderReady: boolean;
+  orderedDishesTotal: number;
 }
 
 const HeaderWrapper = styled.div`
@@ -86,15 +88,33 @@ const LogosWrapper = styled.div`
   display: flex;
 `;
 
+const BasketWrapper = styled(Link)`
+  position: relative;
+  display: flex;
+  align-self: flex-end;
+`;
+
 const BasketLogo = styled.img`
   width: 40px;
   height: 40px;
+  position: absolute;
   align-self: end;
-  margin: -10px -25px;
+  margin: -10px -18px;
   z-index: 10000;
 `;
 
-export function Header() {
+const BasketNumber = styled.div`
+  position: absolute;
+  z-index: 10000;
+  font-weight: 800;
+  text-shadow: 1px 1px ghostwhite;
+  color: black;
+  width: 20px;
+  font-size: 12px;
+  margin: -16px auto;
+`;
+
+export function Header(props: HeaderProps) {
   return (
     <HeaderWrapper>
       <HeaderName>
@@ -103,7 +123,10 @@ export function Header() {
         <p>Cafe & Bistro</p>
       </HeaderName>
       <LogosWrapper>
-        <BasketLogo src={basketImg} />
+        <BasketWrapper to={`/order`}>
+          <BasketLogo src={basketImg} />
+          <BasketNumber>{props.orderedDishesTotal}</BasketNumber>
+        </BasketWrapper>
         <HeaderLogo>
           <FirstLine>
             <p>M</p>
