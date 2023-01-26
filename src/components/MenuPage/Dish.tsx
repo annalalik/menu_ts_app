@@ -6,7 +6,7 @@ import vegetarianImg from "../../assets/vegetarian-mark.png";
 import { AttributeDetailDTO, AttributeDTO, DishDTO } from "../../api";
 import { AttributeFilter } from "./Attributes";
 import addImg from "../../assets/add-new.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import removeImg from "../../assets/remove.png";
 import { OrderedDish } from "./Menu";
 
@@ -123,9 +123,16 @@ export function Dish(props: DishProps) {
     isTransparent = attributeNames.includes("Vegan");
   }
 
-  const isDishOrdered = props.orderedDishes
-    .map((orderedDish) => orderedDish.dishId)
-    .includes(props.dish.id);
+  const [isDishOrdered, setIsDishOrdered] = useState(false);
+
+  useEffect(() => {
+    const isDishOrdered = props.orderedDishes
+      .filter((orderedDish) => orderedDish.quantity > 0)
+      .map((orderedDish) => orderedDish.dishId)
+      .includes(props.dish.id);
+
+    setIsDishOrdered(isDishOrdered);
+  }, [props.orderedDishes]);
 
   const dishQuantity = props.orderedDishes.find(
     (orderedDish) => orderedDish.dishId === props.dish.id
@@ -145,7 +152,8 @@ export function Dish(props: DishProps) {
       <DishDescriptionwrapper>
         <div>
           <h3>
-            {props.dish.name} {dishQuantity && <span>({dishQuantity})</span>}
+            {props.dish.name}{" "}
+            {dishQuantity > 0 && <span>({dishQuantity})</span>}
           </h3>
           <p>{props.dish.description}</p>
         </div>

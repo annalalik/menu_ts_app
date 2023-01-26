@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import { menuItems } from "../../api";
 import { AttributeFilter } from "./Attributes";
+import { devices } from "../../globalStyles";
 
 const MenuPage = styled.div`
   width: 100%;
@@ -23,6 +24,10 @@ const MenuWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   column-gap: 80px;
   row-gap: 10px;
+
+  @media ${devices.laptop} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const GroupWrapper = styled.div`
@@ -73,7 +78,10 @@ export function Menu() {
   const orderedDishesTotal = orderedDishes
     .map((dishTotal) => dishTotal.quantity)
     .reduce((qt1, qt2) => qt1 + qt2, 0);
-  console.log(orderedDishesTotal);
+
+  useEffect(() => {
+    setOrderedDishes(JSON.parse(localStorage.getItem("orderedDishes")) ?? []);
+  }, []);
 
   useEffect(() => {
     const fetchMenuData = async () => {
@@ -123,6 +131,7 @@ export function Menu() {
     }
 
     setOrderedDishes(newOrderedDishes);
+    localStorage.setItem("orderedDishes", JSON.stringify(orderedDishes));
   };
 
   const removeOrderedDishes = (dishId: string) => {
@@ -140,6 +149,7 @@ export function Menu() {
     }
 
     setOrderedDishes(newOrderedDishes);
+    localStorage.setItem("orderedDishes", JSON.stringify(orderedDishes));
   };
 
   const [attributeFilter, setAttributeFilter] = useState<AttributeFilter>({
@@ -163,6 +173,7 @@ export function Menu() {
       <Header
         isOrderReady={isOrderReady}
         orderedDishesTotal={orderedDishesTotal}
+        orderedDishes={orderedDishes}
       />
       <Attributes filter={attributeFilter} setFilter={handleFilterChange} />
 

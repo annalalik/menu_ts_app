@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import basketImg from "../../assets/basket-yellow.png";
 import { Link } from "react-router-dom";
+import { OrderedDish } from "./Menu";
 
 export interface HeaderProps {
   isOrderReady: boolean;
   orderedDishesTotal: number;
+  orderedDishes: OrderedDish[];
 }
 
 const HeaderWrapper = styled.div`
