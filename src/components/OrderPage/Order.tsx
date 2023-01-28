@@ -5,6 +5,7 @@ import {
   MenuDTO,
   menuItems,
   dishAttributesItems,
+  DishDTO,
 } from "../../api";
 import { OrderedDish } from "../MenuPage/Menu";
 import removeImg from "../../assets/remove.png";
@@ -12,10 +13,11 @@ import { Link } from "react-router-dom";
 
 export function Order() {
   const orderedDishes = localStorage.getItem("orderedDishes");
-  const orderedDishesParsed = JSON.parse(orderedDishes);
+  const orderedDishesParsed =
+    orderedDishes !== null ? JSON.parse(orderedDishes) : [];
   const [orderedDishesArray, setOrderedDishesArray] =
     useState<OrderedDish[]>(orderedDishesParsed);
-  const [menuData, setMenuData] = useState<MenuDTO>();
+  const [menuData, setMenuData] = useState<MenuDTO>({ id: "", groups: [] });
   const [attributesData, setAttributesData] = useState<AttributeDetailDTO[]>(
     []
   );
@@ -54,12 +56,19 @@ export function Order() {
     fetchMenuData();
   }, []);
 
-  let allDishesArray = [];
-  let orderedDishesWithPriceAndQuantity = [];
+  interface DishWithPriceAndQuantity {
+    id: string;
+    name: string;
+    price: string;
+    quantity?: number;
+  }
 
-  for (let i = 0; i <= menuData?.groups?.length - 1; i++) {
+  let allOrderedDishesWithPriceArray: Array<DishWithPriceAndQuantity> = [];
+  let orderedDishesWithPriceAndQuantity: Array<DishWithPriceAndQuantity> = [];
+
+  for (let i = 0; i <= menuData.groups.length - 1; i++) {
     menuData?.groups[i].dishes?.forEach((dish) => {
-      allDishesArray.push({
+      allOrderedDishesWithPriceArray.push({
         id: dish.id,
         name: dish.name,
         price: dish.price,
@@ -67,29 +76,31 @@ export function Order() {
     });
   }
 
-  for (let j = 0; j <= allDishesArray?.length - 1; j++) {
+  for (let j = 0; j <= allOrderedDishesWithPriceArray?.length - 1; j++) {
     orderedDishesArray?.forEach((dish) => {
-      if (allDishesArray[j].id === dish.dishId) {
+      if (allOrderedDishesWithPriceArray[j].id === dish.dishId) {
         orderedDishesWithPriceAndQuantity.push({
           id: dish.dishId,
-          name: allDishesArray[j].name,
-          price: allDishesArray[j].price,
+          name: allOrderedDishesWithPriceArray[j].name,
+          price: allOrderedDishesWithPriceArray[j].price,
           quantity: dish.quantity,
         });
       }
     });
   }
 
-  let arrayWithTotalPrices = [];
-
-  const totalPriceForDishArray = orderedDishesWithPriceAndQuantity.forEach(
-    (item) => {
-      arrayWithTotalPrices.push({ sumForDish: item.quantity * item.price });
+  let arrayWithTotalPrices = orderedDishesWithPriceAndQuantity.map((item) => {
+    if (item.quantity) {
+      return { sumForDish: item.quantity * Number(item.price) };
+    } else {
+      return { sumForDish: 0 };
     }
-  );
+  });
 
   const totalPrice = arrayWithTotalPrices
-    .map((item) => item.sumForDish)
+    .map((item) => {
+      return item.sumForDish;
+    })
     .reduce((a, b) => a + b, 0);
 
   const OrderPage = styled.div`
@@ -193,7 +204,7 @@ export function Order() {
     }
   `;
 
-  const removeDish = (dish) => {
+  const removeDish = (dish: DishWithPriceAndQuantity) => {
     const newOrderedDishesArray = orderedDishesArray.map((item) => {
       let newItem = { ...item };
       if (item.dishId === dish.id) {
@@ -225,7 +236,7 @@ export function Order() {
         {orderedDishesWithPriceAndQuantity.map((dish) => {
           return (
             <>
-              {dish.quantity > 0 && (
+              {dish.quantity && dish.quantity > 0 && (
                 <OrderedDish>
                   <RemoveItem
                     src={removeImg}
@@ -235,7 +246,7 @@ export function Order() {
                   <DishQt>{dish.quantity} szt</DishQt>
                   <DishPrice>
                     {dish.price} x {dish.quantity} ={" "}
-                    {dish.price * dish.quantity} PLN
+                    {Number(dish.price) * dish.quantity} PLN
                   </DishPrice>
                 </OrderedDish>
               )}

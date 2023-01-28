@@ -80,7 +80,11 @@ export function Menu() {
     .reduce((qt1, qt2) => qt1 + qt2, 0);
 
   useEffect(() => {
-    setOrderedDishes(JSON.parse(localStorage.getItem("orderedDishes")) ?? []);
+    const orderedDishesLS = localStorage.getItem("orderedDishes");
+
+    if (orderedDishesLS !== null) {
+      setOrderedDishes(JSON.parse(orderedDishesLS) ?? []);
+    }
   }, []);
 
   useEffect(() => {
@@ -184,14 +188,18 @@ export function Menu() {
               <h2>{group.name}</h2>
               <DishesWrapper>
                 {group.dishes.map((dish) => {
+                  const dishQuantity = orderedDishes.find(
+                    (orderedDish) => orderedDish.dishId === dish.id
+                  )?.quantity;
+
                   return (
                     <Dish
                       filter={attributeFilter}
                       dish={dish}
                       attributesData={attributesData}
                       addOrderedDish={addOrderedDish}
-                      orderedDishes={orderedDishes}
                       removeOrderedDish={removeOrderedDishes}
+                      orderedQuantity={dishQuantity}
                     />
                   );
                 })}

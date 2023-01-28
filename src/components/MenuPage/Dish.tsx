@@ -81,8 +81,8 @@ interface DishProps {
   filter: AttributeFilter;
   attributesData: AttributeDetailDTO[];
   addOrderedDish: (value: string) => void;
-  orderedDishes: OrderedDish[];
   removeOrderedDish: (value: string) => void;
+  orderedQuantity: number | undefined;
 }
 
 const imageAttributeMap: Record<string, string> = {
@@ -125,19 +125,6 @@ export function Dish(props: DishProps) {
 
   const [isDishOrdered, setIsDishOrdered] = useState(false);
 
-  useEffect(() => {
-    const isDishOrdered = props.orderedDishes
-      .filter((orderedDish) => orderedDish.quantity > 0)
-      .map((orderedDish) => orderedDish.dishId)
-      .includes(props.dish.id);
-
-    setIsDishOrdered(isDishOrdered);
-  }, [props.orderedDishes]);
-
-  const dishQuantity = props.orderedDishes.find(
-    (orderedDish) => orderedDish.dishId === props.dish.id
-  )?.quantity;
-
   return (
     <DishWrapper greyedOut={isTransparent}>
       <AddItem
@@ -153,7 +140,9 @@ export function Dish(props: DishProps) {
         <div>
           <h3>
             {props.dish.name}{" "}
-            {dishQuantity > 0 && <span>({dishQuantity})</span>}
+            {props.orderedQuantity && props.orderedQuantity > 0 && (
+              <span>({props.orderedQuantity})</span>
+            )}
           </h3>
           <p>{props.dish.description}</p>
         </div>
