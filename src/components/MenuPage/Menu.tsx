@@ -81,9 +81,12 @@ export function Menu() {
 
   useEffect(() => {
     const orderedDishesLS = localStorage.getItem("orderedDishes");
+    console.log(orderedDishesLS);
 
     if (orderedDishesLS !== null) {
-      setOrderedDishes(JSON.parse(orderedDishesLS) ?? []);
+      orderedDishesLS !== "undefined"
+        ? setOrderedDishes(JSON.parse(orderedDishesLS))
+        : setOrderedDishes([]);
     }
   }, []);
 
@@ -192,6 +195,7 @@ export function Menu() {
                     (orderedDish) => orderedDish.dishId === dish.id
                   )?.quantity;
 
+                  console.log(dishQuantity);
                   return (
                     <Dish
                       filter={attributeFilter}

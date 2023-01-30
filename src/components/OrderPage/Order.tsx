@@ -205,17 +205,19 @@ export function Order() {
   `;
 
   const removeDish = (dish: DishWithPriceAndQuantity) => {
-    const newOrderedDishesArray = orderedDishesArray.map((item) => {
-      let newItem = { ...item };
-      if (item.dishId === dish.id) {
-        if (newItem.quantity > 0) {
-          newItem.quantity = newItem.quantity - 1;
-        } else {
-          newItem.quantity = newItem.quantity;
+    const newOrderedDishesArray = orderedDishesArray
+      .map((item) => {
+        let newItem = { ...item };
+        if (item.dishId === dish.id) {
+          if (newItem.quantity > 0) {
+            newItem.quantity = newItem.quantity - 1;
+          } else {
+            newItem.quantity = newItem.quantity;
+          }
         }
-      }
-      return newItem;
-    });
+        return newItem;
+      })
+      .filter((item) => item.quantity > 0);
 
     localStorage.setItem(
       "orderedDishes",

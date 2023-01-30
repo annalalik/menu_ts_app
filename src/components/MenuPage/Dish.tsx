@@ -123,7 +123,8 @@ export function Dish(props: DishProps) {
     isTransparent = attributeNames.includes("Vegan");
   }
 
-  const [isDishOrdered, setIsDishOrdered] = useState(false);
+  const isDishOrdered =
+    props.orderedQuantity && props.orderedQuantity > 0 ? true : false;
 
   return (
     <DishWrapper greyedOut={isTransparent}>
