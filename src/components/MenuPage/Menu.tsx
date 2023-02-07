@@ -8,7 +8,7 @@ import {
   MenuDTO,
   MenuGroupDTO,
 } from "../../api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { menuItems } from "../../api";
 import { AttributeFilter } from "./Attributes";
 import { devices } from "../../globalStyles";
@@ -75,13 +75,16 @@ export function Menu() {
   const [isOrderReady, setIsOrderReady] = useState(false);
   const [orderedDishes, setOrderedDishes] = useState<OrderedDish[]>([]);
 
-  const orderedDishesTotal = orderedDishes
-    .map((dishTotal) => dishTotal.quantity)
-    .reduce((qt1, qt2) => qt1 + qt2, 0);
+  const orderedDishesTotal = useMemo(
+    () =>
+      orderedDishes
+        .map((dishTotal) => dishTotal.quantity)
+        .reduce((qt1, qt2) => qt1 + qt2, 0),
+    [orderedDishes]
+  );
 
   useEffect(() => {
     const orderedDishesLS = localStorage.getItem("orderedDishes");
-    console.log(orderedDishesLS);
 
     if (orderedDishesLS !== null) {
       orderedDishesLS !== "undefined"
@@ -195,7 +198,6 @@ export function Menu() {
                     (orderedDish) => orderedDish.dishId === dish.id
                   )?.quantity;
 
-                  console.log(dishQuantity);
                   return (
                     <Dish
                       filter={attributeFilter}

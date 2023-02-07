@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useMemo } from "react";
 import glutenFreeImg from "../../assets/no-gluten.png";
 import lactoseFreeImg from "../../assets/no-dairy.png";
 import veganImg from "../../assets/vegan.png";
@@ -94,14 +95,19 @@ const imageAttributeMap: Record<string, string> = {
 
 export function Dish(props: DishProps) {
   const dishPrice = parseFloat(props.dish.price).toLocaleString();
-  const attributesArray = props.dish.attributes
-    .map((attribute: AttributeDTO) => {
-      const matchedAttr = props.attributesData?.find(
-        (atr) => atr.id === attribute.dish_attributes_id
-      );
-      return matchedAttr;
-    })
-    .filter((attribute): attribute is AttributeDetailDTO => !!attribute);
+
+  const attributesArray = useMemo(
+    () =>
+      props.dish.attributes
+        .map((attribute: AttributeDTO) => {
+          const matchedAttr = props.attributesData?.find(
+            (atr) => atr.id === attribute.dish_attributes_id
+          );
+          return matchedAttr;
+        })
+        .filter((attribute): attribute is AttributeDetailDTO => !!attribute),
+    [props.dish.attributes, props.attributesData]
+  );
 
   const attributeNames = attributesArray.map((attribute) => attribute.name);
   const { isGlutenFree, isLactoseFree, isVegetarian, isVegan } = props.filter;

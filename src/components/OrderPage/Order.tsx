@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   AttributeDetailDTO,
   MenuDTO,
@@ -97,11 +97,15 @@ export function Order() {
     }
   });
 
-  const totalPrice = arrayWithTotalPrices
-    .map((item) => {
-      return item.sumForDish;
-    })
-    .reduce((a, b) => a + b, 0);
+  const totalPrice = useMemo(
+    () =>
+      arrayWithTotalPrices
+        .map((item) => {
+          return item.sumForDish;
+        })
+        .reduce((a, b) => a + b, 0),
+    [arrayWithTotalPrices]
+  );
 
   const OrderPage = styled.div`
     width: 100%;
